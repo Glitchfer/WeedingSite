@@ -2,7 +2,7 @@ import { util } from '../../common/util.js';
 
 export const pagination = (() => {
 
-    let perPage = 10;
+    let perPage = 3;
     let pageNow = 0;
     let totalData = 0;
 
@@ -92,13 +92,15 @@ export const pagination = (() => {
         };
 
         const next = () => {
-            pageNow += perPage;
+            // pageNow += perPage;
+            pageNow += 1;
             button.innerHTML = 'Next' + button.innerHTML;
             process();
         };
 
         const prev = () => {
-            pageNow -= perPage;
+            // pageNow -= perPage;
+            pageNow -= 1;
             button.innerHTML = button.innerHTML + 'Prev';
             process();
         };
@@ -132,7 +134,7 @@ export const pagination = (() => {
         totalData = Number(len);
 
         if (totalData <= perPage && pageNow === 0) {
-            paginate.classList.add('d-none');
+            // paginate.classList.add('d-none');
             return;
         }
 
@@ -164,7 +166,7 @@ export const pagination = (() => {
         paginate = document.getElementById('pagination');
         paginate.innerHTML = `
         <ul class="pagination mb-2 shadow-sm rounded-4">
-            <li class="page-item disabled" id="previous">
+            <li class="page-item" id="previous">
                 <button class="page-link rounded-start-4" onclick="undangan.comment.pagination.previous(this)" data-offline-disabled="false">
                     <i class="fa-solid fa-circle-left me-1"></i>Prev
                 </button>
@@ -193,6 +195,10 @@ export const pagination = (() => {
         reset,
         setTotal,
         geTotal,
+        enableNext,
+        disableNext,
+        enablePrevious,
+        disablePrevious,
         previous: (btn) => buttonAction(btn).prev(),
         next: (btn) => buttonAction(btn).next(),
     };

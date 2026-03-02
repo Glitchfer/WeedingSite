@@ -10,7 +10,9 @@ import { session } from '../../common/session.js';
 import { request, HTTP_GET, HTTP_POST, HTTP_DELETE, HTTP_PUT, HTTP_STATUS_CREATED } from '../../connection/request.js';
 
 export const comment = (() => {
-
+    let lastCreatedAt = null;
+    let pageCursors = [null]; // halaman pertama
+    // let currentPage = 0;
     /**
      * @type {ReturnType<typeof storage>|null}
      */
@@ -86,7 +88,7 @@ export const comment = (() => {
                 return i;
             }));
 
-            // document.getElementById(id).classList.toggle('d-none', isShow);
+            document.getElementById(id).classList.toggle('d-none', isShow);
         }
     };
 
@@ -193,21 +195,32 @@ export const comment = (() => {
      * @returns {Promise<ReturnType<typeof dto.getCommentsResponse>>}
      */
     const show = () => {
+        const per = pagination.getPer();
+        const pageIndex = pagination.getNext(); // 🔥 sumber kebenaran
+
+        const cursor = pageCursors[pageIndex];
+
+        const queryObj = {
+            orderBy: '"created_at"',
+            limitToFirst: per
+        };
+
+        if (cursor !== null) {
+            queryObj.startAfter = cursor;
+        }
+
+        const params = new URLSearchParams(queryObj);
+        const path = `names.json?${params.toString()}`;
 
         // remove all event listener.
-        lastRender.forEach((u) => {
-            like.removeListener(u);
-        });
+        // lastRender.forEach((u) => {
+        //     like.removeListener(u);
+        // });
 
         if (comments.getAttribute('data-loading') === 'false') {
             comments.setAttribute('data-loading', 'true');
-            comments.innerHTML = card.renderLoading().repeat(pagination.getPer());
+            comments.innerHTML = card.renderLoading().repeat(per);
         }
-        const params = new URLSearchParams({
-            orderBy: '"created_at"',   // penting: pakai tanda kutip
-            limitToFirst: 5
-        });
-        const path = `names.json?${params.toString()}`;
         // return request(HTTP_GET, `/api/v2/comment?per=${pagination.getPer()}&next=${pagination.getNext()}&lang=${lang.getLanguage()}`)
         return request(HTTP_GET, path)
             // .token(session.getToken())
@@ -215,30 +228,66 @@ export const comment = (() => {
             // .withForceCache()
             .send(dto.getCommentsResponseV2)
             .then(async (res) => {
-                console.log(res)
+                console.log('getNewComents', res)
                 
                 comments.setAttribute('data-loading', 'false');
 
-                for (const u of lastRender) {
-                    await gif.remove(u);
-                }
+                // for (const u of lastRender) {
+                //     await gif.remove(u);
+                // }
+                // if (res.data.lists.length === 0 || !res.data.lists.length) {
+                //     comments.innerHTML = onNullComment();
+                //     return res;
+                // }
                 if (res.data.lists.length === 0) {
                     comments.innerHTML = onNullComment();
+                    pagination.disableNext();
+                    pagination.disablePrevious();
                     return res;
                 }
 
-                const flatten = (ii) => ii.flatMap((i) => [i.uuid, ...flatten(i.comments)]);
-                lastRender.splice(0, lastRender.length, ...flatten(res.data.lists));
-                showHide.set('hidden', traverse(res.data.lists, showHide.get('hidden')));
+                // 🔥 simpan cursor untuk halaman berikutnya
+                const lastItem = res.data.lists[res.data.lists.length - 1];
 
-                let data = await card.renderContentMany(res.data.lists);
-                
-                console.log('pagination>>>', pagination.getPer())
-                if (res.data.lists.length < pagination.getPer()) {
-                    data += onNullComment();
+                if (!pageCursors[pageIndex + 1]) {
+                    pageCursors[pageIndex + 1] = lastItem.created_at;
                 }
 
-                util.safeInnerHTML(comments, data);
+                // const flatten = (ii) => ii.flatMap((i) => [i.uuid, ...flatten(i.comments)]);
+                // lastRender.splice(0, lastRender.length, ...flatten(res.data.lists));
+                // showHide.set('hidden', traverse(res.data.lists, showHide.get('hidden')));
+                
+                let html = await card.renderContentMany(res.data.lists);
+                // let data = await card.renderContentMany(res.data.lists);
+                util.safeInnerHTML(comments, html);
+
+                // pagination.setTotal(res.data.count);
+                
+                // console.log('data.lists>>>', (res.data.lists.length))
+                // console.log('currentPage>>>', currentPage)
+                // console.log('pagination>>>', pagination.getPer())
+                // if (res.data.lists.length < pagination.getPer()) {
+                //     html += onNullComment();
+                // }
+                if (pageIndex === 0) {
+                    pagination.disablePrevious();
+                } else {
+                    pagination.enablePrevious();
+                }
+                if (res.data.lists.length < per) {
+                    pagination.disableNext();
+                    // html += onNullComment();
+                } else {
+                    pagination.enableNext();
+                }
+                // if (currentPage === 0) {
+                //     pagination.disablePrevious();
+                // } else {
+                //     pagination.enablePrevious();
+                // }
+
+
+                util.safeInnerHTML(comments, html);
 
                 lastRender.forEach((u) => {
                     like.addListener(u);
@@ -253,7 +302,7 @@ export const comment = (() => {
                 //     await Promise.all(res.data.lists.map((v) => fetchTracker(v)));
                 // }
 
-                pagination.setTotal(res.data.count);
+                // pagination.setTotal(res.data.count);
                 comments.dispatchEvent(new Event('undangan.comment.done'));
                 return res;
             });
@@ -559,7 +608,7 @@ export const comment = (() => {
                 return;
             }
 
-            pagination.setTotal(pagination.geTotal() + 1);
+            // pagination.setTotal(pagination.geTotal() + 1);
             if (comments.children.length === pagination.getPer()) {
                 comments.lastElementChild.remove();
             }
@@ -594,6 +643,7 @@ export const comment = (() => {
 
             const buttonLike = like.getButtonLike(id);
             buttonLike.parentNode.insertBefore(readMoreElement, buttonLike);
+            resetPagination()
         }
 
         like.addListener(response.data.uuid);
@@ -683,7 +733,11 @@ export const comment = (() => {
         formInner.value = original;
         formInner.setAttribute('data-original', util.base64Encode(original));
     };
-
+    const resetPagination = () => {
+        pageCursors = [null];
+        // currentPage = 0;
+        pagination.reset();
+    };
     /**
      * @returns {void}
      */
@@ -706,6 +760,22 @@ export const comment = (() => {
         if (!showHide.has('show')) {
             showHide.set('show', []);
         }
+        
+        resetPagination();
+        show();
+        // pagination.next = (btn) => {
+        //     // currentPage++;
+        //     console.log('afterNext', currentPage)
+        //     pagination.getNext = () => currentPage;
+        //     comments.dispatchEvent(new Event('undangan.comment.show'));
+        // };
+
+        // pagination.previous = (btn) => {
+        //     // if (currentPage === 0) return;
+        //     // currentPage--;
+        //     pagination.getNext = () => currentPage;
+        //     comments.dispatchEvent(new Event('undangan.comment.show'));
+        // };
     };
 
     return {

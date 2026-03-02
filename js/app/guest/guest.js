@@ -377,7 +377,10 @@ export const guest = (() => {
 
                 comment.show()
                     .then(() => progress.complete('comment'))
-                    .catch(() => progress.invalid('comment'));
+                    .catch((err) => {
+                        console.log(err);
+                        return progress.invalid('comment')
+                    });
 
             // }).catch(() => progress.invalid('config'));
         }

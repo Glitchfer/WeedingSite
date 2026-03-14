@@ -140,7 +140,7 @@ export const cacheWrapper = (cacheName) => {
  * @param {string} method 
  * @param {string} path 
  */
-export const request = (method, path) => {
+export const request = (method, path, mod) => {
 
     const ac = new AbortController();
     const req = {
@@ -325,7 +325,8 @@ export const request = (method, path) => {
             if (downName) {
                 Object.keys(defaultJSON).forEach((k) => req.headers.delete(k));
             }
-
+            console.log('getData>>>', path);
+            
             return baseFetch(new URL(path, document.body.getAttribute('data-url'))).then((res) => {
                 
                 if (downName && res.ok) {
@@ -390,12 +391,14 @@ export const request = (method, path) => {
                     console.warn('Fetch aborted:', err);
                     return err;
                 }
-
+                
                 if (err.name === ERROR_TYPE) {
                     err = new Error('🟥 Network error or rate limit exceeded');
                 }
 
-                alert(err.message ?? String(err));
+                if (mod != 'comment') {
+                    alert(err.message ?? String(err));
+                }
                 throw err;
             });
         },

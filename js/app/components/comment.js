@@ -202,11 +202,12 @@ export const comment = (() => {
 
         const queryObj = {
             orderBy: '"created_at"',
-            limitToFirst: per
+            limitToLast: per
         };
 
         if (cursor !== null) {
-            queryObj.startAfter = cursor;
+            // queryObj.startAfter = cursor;
+            queryObj.endAt = cursor;
         }
 
         const params = new URLSearchParams(queryObj);
@@ -216,20 +217,18 @@ export const comment = (() => {
         // lastRender.forEach((u) => {
         //     like.removeListener(u);
         // });
-
+        const lastInnerHTML = comments.innerHTML
         if (comments.getAttribute('data-loading') === 'false') {
             comments.setAttribute('data-loading', 'true');
             comments.innerHTML = card.renderLoading().repeat(per);
         }
         // return request(HTTP_GET, `/api/v2/comment?per=${pagination.getPer()}&next=${pagination.getNext()}&lang=${lang.getLanguage()}`)
-        return request(HTTP_GET, path)
+        return request(HTTP_GET, path, 'comment')
             // .token(session.getToken())
             // .withCache(1000 * 30)
             // .withForceCache()
             .send(dto.getCommentsResponseV2)
             .then(async (res) => {
-                console.log('getNewComents', res)
-                
                 comments.setAttribute('data-loading', 'false');
 
                 // for (const u of lastRender) {
@@ -247,7 +246,9 @@ export const comment = (() => {
                 }
 
                 // 🔥 simpan cursor untuk halaman berikutnya
-                const lastItem = res.data.lists[res.data.lists.length - 1];
+                const list = Object.values(res.data.lists).reverse();
+
+                const lastItem = list[list.length - 1];
 
                 if (!pageCursors[pageIndex + 1]) {
                     pageCursors[pageIndex + 1] = lastItem.created_at;
@@ -257,7 +258,7 @@ export const comment = (() => {
                 // lastRender.splice(0, lastRender.length, ...flatten(res.data.lists));
                 // showHide.set('hidden', traverse(res.data.lists, showHide.get('hidden')));
                 
-                let html = await card.renderContentMany(res.data.lists);
+                let html = await card.renderContentMany(list);
                 // let data = await card.renderContentMany(res.data.lists);
                 util.safeInnerHTML(comments, html);
 
@@ -292,11 +293,13 @@ export const comment = (() => {
                 lastRender.forEach((u) => {
                     like.addListener(u);
                 });
-
+                
+                document.getElementById("page").textContent = 1 + pageIndex;
                 return res;
             })
             .then(async (res) => {
                 comments.dispatchEvent(new Event('undangan.comment.result'));
+                comments.dispatchEvent(new Event('undangan.comment.done'));
 
                 // if (res.data.lists && session.isAdmin()) {
                 //     await Promise.all(res.data.lists.map((v) => fetchTracker(v)));
@@ -305,6 +308,16 @@ export const comment = (() => {
                 // pagination.setTotal(res.data.count);
                 comments.dispatchEvent(new Event('undangan.comment.done'));
                 return res;
+            }).catch(async (err) => {
+                comments.setAttribute('data-loading', 'false');
+                
+                comments.innerHTML = lastInnerHTML;
+                pagination.disableNext();
+                pagination.enablePrevious();
+                comments.dispatchEvent(new Event('undangan.comment.result'));
+                comments.dispatchEvent(new Event('undangan.comment.done'));
+                document.getElementById("page").textContent = 1 + pageIndex;
+                return null;
             });
     };
 
@@ -644,6 +657,7 @@ export const comment = (() => {
             const buttonLike = like.getButtonLike(id);
             buttonLike.parentNode.insertBefore(readMoreElement, buttonLike);
             resetPagination()
+            // show()
         }
 
         like.addListener(response.data.uuid);

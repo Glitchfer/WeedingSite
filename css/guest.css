@@ -301,45 +301,34 @@ body{
 /* ===============================
    ORNAMEN
 ================================ */
-/* .border-line { */
-    /* position: relative; */
-    /* z-index: 999; */
-    /* background-image:url("../assets/images/border1.png"); */
-    /* background-size: contain; */
-    /* background-repeat: no-repeat; */
-    /* background-position: top; */
-    /* top: 0; */
-    /* bottom: -50px; */
-    /* right: 0; */
-    /* left:0;  */
-/* } */
 .border-line::before,
 .border-line::after{
     content:"";
     background-image:url("../assets/images/border3.png");
     position: absolute;
-    background-size: contain;
+    opacity: 0.5;
+}
+
+.border-line::before{
+    background-position: top;
+    background-size: cover;
+    height: 50%;
+    top: 0px;
+    right: 0;
+    left:0; 
     background-repeat: no-repeat;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left:0; 
-    z-index: 2;
 }
-
-/* .border-line::before{
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left:0; 
-}
-
 .border-line::after{
-    top: 650px;
-    bottom: -560px;
+    background-position: bottom;
+    background-size: cover;
+    height: 50%;
+    bottom: 0;
     right: 0;
     left:0; 
-} */
+    background-repeat: no-repeat;
+}
+
+
 .border-line2::before,
 .border-line2::after{
     content:"";
@@ -358,14 +347,6 @@ body{
     content:"";
     background-image:url("../assets/images/border1.png");
     position: absolute;
-    /* background-size: contain;
-    background-repeat: no-repeat;
-    background-position: bottom; */
-    /* top: 0;
-    bottom: 0;
-    right: 0;
-    left:0;  */
-    /* height: 50%; */
 }
 
 .border-line3::before{
@@ -449,7 +430,7 @@ html[data-bs-theme="dark"] .bg-pattern {
     background-size: cover;
     background-repeat: no-repeat;
     position: absolute;
-    opacity: 0.5;
+    opacity: 0.2;
     z-index: 1;
 }
 .top-corner::before
@@ -476,13 +457,13 @@ html[data-bs-theme="dark"] .bg-pattern {
     background-size: cover;
     background-repeat: no-repeat;
     position: absolute;
-    opacity: 0.5;
+    opacity: 0.2;
     z-index: 1;
 }
 .bottom-corner::before
 {
     left: 10px;
-    bottom: 20px;
+    bottom: 10px;
     width: 180px;
     height: 180px;
     /* transform: rotate(180deg); */
@@ -490,7 +471,7 @@ html[data-bs-theme="dark"] .bg-pattern {
 .bottom-corner::after
 {
     right: 10px;
-    bottom: 20px;
+    bottom: 10px;
     width: 180px;
     height: 180px;
     transform: rotate(270deg);

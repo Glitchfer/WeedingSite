@@ -511,8 +511,11 @@ export const comment = (() => {
             return;
         }
 
-        const gifIsOpen = gif.isOpen(id ? id : gif.default);
-        const gifId = gif.getResultId(id ? id : gif.default);
+        // const gifIsOpen = gif.isOpen(id ? id : gif.default);
+        // const gifId = gif.getResultId(id ? id : gif.default);
+        // const gifCancel = gif.buttonCancel(id);
+        const gifIsOpen = gif.isOpen(gif.default);
+        const gifId = gif.getResultId(gif.default);
         const gifCancel = gif.buttonCancel(id);
 
         if (gifIsOpen && !gifId) {
@@ -524,7 +527,9 @@ export const comment = (() => {
             gifCancel.hide();
         }
 
-        const form = document.getElementById(`form-${id ? `inner-${id}` : 'comment'}`);
+        // const form = document.getElementById(`form-${id ? `inner-${id}` : 'comment'}`);
+        const form = document.getElementById(`form-comment`);
+        
         if (!gifIsOpen && form.value?.trim().length === 0) {
             util.notify('Comments cannot be empty.').warning();
             return;
@@ -550,8 +555,8 @@ export const comment = (() => {
         const btn = util.disableButton(button);
         const isPresence = presence ? presence.value === '1' : true;
 
+        const info = storage('information');
         if (!session.isAdmin()) {
-            const info = storage('information');
             info.set('name', nameValue);
 
             if (!id) {
@@ -577,7 +582,6 @@ export const comment = (() => {
                 comments: {}
             }).send();
 
-        console.log('After SEND>>>>', response)
         if (name) { 
             name.disabled = false;
         }
@@ -605,9 +609,11 @@ export const comment = (() => {
         }
 
         owns.set(response.data.uuid, response.data.own);
-
+        
         if (form) {
             form.value = null;
+            presence.value = '0';
+            name.value = '';
         }
 
         if (gifIsOpen && gifId) {
@@ -632,36 +638,41 @@ export const comment = (() => {
             comments.scrollIntoView();
         }
 
-        if (id) {
-            showHide.set('hidden', showHide.get('hidden').concat([dto.commentShowMore(response.data.uuid, true)]));
-            showHide.set('show', showHide.get('show').concat([id]));
+        // if (id) {
+        //     info.clear()
+        //     showHide.set('hidden', showHide.get('hidden').concat([dto.commentShowMore(response.data.uuid, true)]));
+        //     showHide.set('show', showHide.get('show').concat([id]));
 
-            removeInnerForm(id);
+        //     removeInnerForm(id);
 
-            response.data.is_parent = false;
-            response.data.is_admin = session.isAdmin();
-            document.getElementById(`reply-content-${id}`).insertAdjacentHTML('beforeend', await card.renderContentSingle(response.data));
+        //     response.data.is_parent = false;
+        //     response.data.is_admin = session.isAdmin();
+        //     document.getElementById(`reply-content-${id}`).insertAdjacentHTML('beforeend', await card.renderContentSingle(response.data));
 
-            const anchorTag = document.getElementById(`button-${id}`).querySelector('a');
-            if (anchorTag) {
-                if (anchorTag.getAttribute('data-show') === 'false') {
-                    showOrHide(anchorTag);
-                }
+        //     const anchorTag = document.getElementById(`button-${id}`).querySelector('a');
+        //     if (anchorTag) {
+        //         if (anchorTag.getAttribute('data-show') === 'false') {
+        //             showOrHide(anchorTag);
+        //         }
 
-                anchorTag.remove();
-            }
+        //         anchorTag.remove();
+        //     }
 
-            const uuids = [response.data.uuid];
-            const readMoreElement = document.createRange().createContextualFragment(card.renderReadMore(id, anchorTag ? anchorTag.getAttribute('data-uuids').split(',').concat(uuids) : uuids));
+        //     const uuids = [response.data.uuid];
+        //     const readMoreElement = document.createRange().createContextualFragment(card.renderReadMore(id, anchorTag ? anchorTag.getAttribute('data-uuids').split(',').concat(uuids) : uuids));
 
-            const buttonLike = like.getButtonLike(id);
-            buttonLike.parentNode.insertBefore(readMoreElement, buttonLike);
-            resetPagination()
-            // show()
+        //     const buttonLike = like.getButtonLike(id);
+        //     buttonLike.parentNode.insertBefore(readMoreElement, buttonLike);
+        //     resetPagination()
+        //     show()
+        // }
+        if (info) {
+            info.clear()
         }
-
-        like.addListener(response.data.uuid);
-        lastRender.push(response.data.uuid);
+        resetPagination()
+        show()
+        // like.addListener(response.data.uuid);
+        // lastRender.push(response.data.uuid);
     };
 
     /**

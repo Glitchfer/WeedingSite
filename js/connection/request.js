@@ -325,8 +325,7 @@ export const request = (method, path, mod) => {
             if (downName) {
                 Object.keys(defaultJSON).forEach((k) => req.headers.delete(k));
             }
-            console.log('getData>>>', path);
-            
+            // console.log('getData>>>', path);
             return baseFetch(new URL(path, document.body.getAttribute('data-url'))).then((res) => {
                 
                 if (downName && res.ok) {
@@ -338,6 +337,7 @@ export const request = (method, path, mod) => {
                 }
 
                 return res.json().then((xjson) => {
+                    
                     const res = Object.entries(xjson).map(([key, value]) => ({
                         ...value,
                         uuid: key   // override uuid lama dengan key Firebase
@@ -356,7 +356,11 @@ export const request = (method, path, mod) => {
                         });
                     } else if (method == 'POST') {
                         const body = JSON.parse(req.body)
-                        console.log('req.body>>>', JSON.parse(req.body));
+                        Object.assign(res, {
+                            id: body.uuid,
+                            status: 201,
+                            error: null
+                        });
                         Object.assign(json, {
                             data: {
                                 name: body.name,
@@ -383,7 +387,7 @@ export const request = (method, path, mod) => {
                     if (transform) {
                         json.data = transform(json.data);
                     }
-                    
+                    // console.log('Request status>>>>', res)
                     return Object.assign(json, { code: res.status });
                 });
             }).catch((err) => {

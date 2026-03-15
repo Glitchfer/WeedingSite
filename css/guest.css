@@ -60,10 +60,13 @@ html[data-bs-theme="dark"] .color-theme-svg {
 }
 
 html[data-bs-theme="light"] .bg-light-dark {
+    position: relative;
     background-color: var(--gold-soft);
+    overflow: hidden;
 }
 
 html[data-bs-theme="dark"] .bg-light-dark {
+    position: relative;
     background-color: rgb(var(--bs-dark-rgb));
 }
 
@@ -252,7 +255,7 @@ section{
 html[data-bs-theme="light"] #home {
     background:
     linear-gradient(180deg,
-    var(--maroon) 0%,
+    white 0%,
     #30303041 30%,
     var(--gold-soft) 90%);
     /* color:white; */
@@ -294,3 +297,124 @@ body{
     --maroon:#6b1d1db2;
     --brown:#4b2e2e;
 }
+
+/* ===============================
+   ORNAMEN
+================================ */
+/* .border-line { */
+    /* position: relative; */
+    /* z-index: 999; */
+    /* background-image:url("../assets/images/border1.png"); */
+    /* background-size: contain; */
+    /* background-repeat: no-repeat; */
+    /* background-position: top; */
+    /* top: 0; */
+    /* bottom: -50px; */
+    /* right: 0; */
+    /* left:0;  */
+/* } */
+.border-line::before,
+.border-line::after{
+    content:"";
+    background-image:url("../assets/images/border3.png");
+    position: absolute;
+    background-size: cover;
+    background-repeat: no-repeat;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left:0; 
+}
+
+/* .border-line::before{
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left:0; 
+}
+
+.border-line::after{
+    top: 650px;
+    bottom: -560px;
+    right: 0;
+    left:0; 
+} */
+.border-line2::before,
+.border-line2::after{
+    content:"";
+    background-image:url("../assets/images/border1.png");
+    position: absolute;
+    background-size: cover;
+    background-repeat: no-repeat;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left:0; 
+    height: 50%;
+}
+.border-line3::before,
+.border-line3::after {
+    content:"";
+    background-image:url("../assets/images/border1.png");
+    position: absolute;
+    /* background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom; */
+    /* top: 0;
+    bottom: 0;
+    right: 0;
+    left:0;  */
+    /* height: 50%; */
+}
+
+.border-line3::before{
+    background-position: top;
+    background-size: cover;
+    height: 50%;
+    top: 0px;
+    right: 0;
+    left:0; 
+}
+.border-line3::after{
+    background-position: bottom;
+    background-size: cover;
+    height: 65%;
+    bottom: 0;
+    right: 0;
+    left:0; 
+    background-repeat: no-repeat;
+}
+
+html[data-bs-theme="dark"] .bg-pattern {
+    display: none;
+}
+.bg-pattern::before,
+.bg-pattern::after {
+    content:"";
+    position: absolute;
+    background-size: cover;
+    background-image:url("../assets/images/Corak1i.webp");
+    opacity: 0.7;
+    /* bottom: 0;
+    right: 0;
+    left:0;  */
+    z-index: 1;
+    background-color: var(--gold-soft);
+    background-blend-mode: screen;
+}
+
+.bg-pattern::before{
+    top: 30px;
+    width: 180%;
+    left:-120px; 
+    bottom: 0;
+    /* height: 90%; */
+    z-index: 1;
+    transform: rotate(-10deg);
+}
+/* .bg-pattern::after{
+    top: 100px;
+    bottom: 100px;
+    right: 0;
+    left:0; 
+} */

@@ -306,7 +306,7 @@ body{
     content:"";
     background-image:url("../assets/images/border3.png");
     position: absolute;
-    opacity: 0.5;
+    /* opacity: 0.5; */
 }
 
 .border-line::before{

@@ -12,7 +12,8 @@ html {
 }
 
 .font-esthetic {
-    font-family: 'Alex Brush', cursive !important;
+    /* font-family: 'Alex Brush', cursive !important; */
+    font-family: 'Cinzel', serif !important;
     font-weight: 500;
     font-style: normal;
 }
@@ -50,7 +51,7 @@ html[data-bs-theme="light"] .btn-transparent {
 
 html[data-bs-theme="light"] .color-theme-svg {
     color: rgb(255, 255, 255);
-    background-color: var(--bs-light);
+    background-color: var(--gold-soft);
 }
 
 html[data-bs-theme="dark"] .color-theme-svg {
@@ -59,7 +60,7 @@ html[data-bs-theme="dark"] .color-theme-svg {
 }
 
 html[data-bs-theme="light"] .bg-light-dark {
-    background-color: rgb(var(--bs-light-rgb));
+    background-color: var(--gold-soft);
 }
 
 html[data-bs-theme="dark"] .bg-light-dark {
@@ -115,4 +116,181 @@ svg {
 
 .no-gap-bottom {
     margin-bottom: -0.75rem !important;
+}
+
+/* FONT */
+.font-esthetic{
+    font-family:'Great Vibes',cursive !important;
+    letter-spacing:1px;
+}
+
+/* ===============================
+   TOMBOL PREMIUM
+================================ */
+
+.btn{
+    border-radius:40px;
+    font-weight:500;
+    letter-spacing:.5px;
+    padding:8px 18px;
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,#b68d40,var(--gold));
+    border:none;
+    color:white;
+    box-shadow:0 6px 18px rgba(0,0,0,0.2);
+}
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+}
+
+/* ===============================
+   CARD (GALERI, UCAPAN)
+================================ */
+
+.border.rounded-5{
+    border:2px solid rgba(212,175,55,0.5) !important;
+    box-shadow:
+    0 10px 35px rgba(0,0,0,0.15);
+}
+
+/* ===============================
+   COUNTDOWN TIMER
+================================ */
+
+#wedding-date .border{
+    border:2px solid var(--gold) !important;
+    background:rgba(255,255,255,0.5);
+    backdrop-filter:blur(8px);
+}
+
+
+/* ===============================
+   WELCOME PAGE PREMIUM
+================================ */
+
+/* #welcome{
+    background:
+    radial-gradient(circle at center,
+    rgba(212,175,55,0.2),
+    transparent 70%),
+    #2b0f0f;
+    color:white;
+} */
+
+/* ===============================
+   ANIMASI HALUS
+================================ */
+
+section{
+    animation:fadeInSection .8s ease;
+}
+
+@keyframes fadeInSection{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* ===============================
+   HOVER GALERI
+================================ */
+
+.carousel-item img{
+    transition:transform .5s ease;
+}
+
+.carousel-item img:hover{
+    transform:scale(1.04);
+}
+
+/* ===============================
+   FOTO MEMPELAI
+================================ */
+
+.img-center-crop{
+    border:3px solid var(--gold) !important;
+    box-shadow:
+    0 0 0 6px white,
+    0 15px 40px rgba(0,0,0,0.25);
+    transition:transform .4s ease;
+}
+
+.img-center-crop:hover{
+    transform:scale(1.05);
+}
+
+/* ===============================
+   GLASS EFFECT SECTION
+================================ */
+
+.bg-theme-auto{
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.2);
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* ===============================
+   HEADER PREMIUM
+================================ */
+
+/* #home{
+    background:
+    linear-gradient(180deg,
+    var(--maroon) 0%,
+    #9b9595b0 30%,
+    var(--gold-soft) 100%);
+} */
+
+html[data-bs-theme="light"] #home {
+    background:
+    linear-gradient(180deg,
+    var(--maroon) 0%,
+    #30303041 30%,
+    var(--gold-soft) 90%);
+    /* color:white; */
+}
+
+html[data-bs-theme="light"] h2.font-esthetic{
+    color:var(--maroon);
+    text-shadow:
+    0 2px 2px rgba(0,0,0,0.1),
+    0 0 10px rgba(212,175,55,0.3);
+}
+
+html[data-bs-theme="dark"] h2.font-esthetic{
+    color:var(--gold);
+}
+/* ===============================
+   FRAME UTAMA UNDANGAN
+================================ */
+
+main{
+    /* border:3px solid var(--gold); */
+    /* border-radius:5px; */
+    box-shadow:
+    0 0 0 6px var(--gold-soft),
+    0 15px 50px rgba(0,0,0,0.2);
+    overflow:hidden;
+}
+
+body{
+    background:
+    radial-gradient(circle at 10% 10%,rgba(212,175,55,0.1),transparent 40%),
+    radial-gradient(circle at 90% 90%,rgba(212,175,55,0.1),transparent 40%),
+    #f6f1e9;
+}
+/* WARNA UTAMA */
+:root{
+    --gold:#d4af37;
+    --gold-soft:#f5e6c8;
+    --maroon:#6b1d1db2;
+    --brown:#4b2e2e;
 }

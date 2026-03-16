@@ -70,15 +70,19 @@ export const guest = (() => {
         let name = null;
 
         if (raw.length > 1 && raw[1].length >= 1) {
-            name = window.decodeURIComponent(raw[1]);
+            // name = window.decodeURIComponent(raw[1]);
+            name = decodeURIComponent(raw[1].replace(/\+/g, ' '));
         }
+        // const params = new URLSearchParams(window.location.search);
+        // let name = params.get('to');
 
         if (name) {
             const guestName = document.getElementById('guest-name');
             const div = document.createElement('div');
             div.classList.add('m-2');
 
-            const template = `<small class="mt-0 mb-1 mx-0 p-0">${util.escapeHtml(guestName?.getAttribute('data-message'))}</small><p class="m-0 p-0" style="font-size: 1.25rem">${util.escapeHtml(name)}</p>`;
+            const template = `<small class="mt-0 mb-1 mx-0 p-0">${util.escapeHtml(guestName?.getAttribute('data-message'))}
+            </small><p class="m-0 p-0" style="font-size: 1.25rem">${util.escapeHtml(name)}</p>`;
             util.safeInnerHTML(div, template);
 
             guestName?.appendChild(div);
